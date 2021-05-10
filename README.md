@@ -1,5 +1,7 @@
 # Check Gateway - RMM script
 
+That script is made for RMM using like Solarwinds MSP, NinjaRMM or others.
+
 ## How it works ?
 
 First, the script gets the gateway's IP address :
