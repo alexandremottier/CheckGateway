@@ -1,9 +1,6 @@
-# PowerShell_Scripts
-Some useful PowerShell scripts
+# Check Gateway - RMM script
 
-## Check Gateway
-
-### How it works ?
+## How it works ?
 
 First, the script gets the gateway's IP address :
 
