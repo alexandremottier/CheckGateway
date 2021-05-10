@@ -36,13 +36,13 @@ $MacPrefix = $MacSplit[0] + "-" + $MacSplit[1] + "-" + $MacSplit[2]
 Next, compares the MAC addresses with arrays :
 
 ```
-if($MacFreebox -contains $MacPrefix) # Check for Freebox
+if($MacFreebox -contains $MacPrefix)
 {$Router = "a Freebox"}
-elseif($MacLivebox -contains $MacPrefix) # Check for Livebox
+elseif($MacLivebox -contains $MacPrefix)
 {$Router = "a Livebox"}
-elseif($MacApple -contains $MacPrefix) # Check for Apple Device
+elseif($MacApple -contains $MacPrefix)
 {$Router = "an Apple device"}
-elseif($MacXiaomi -contains $MacPrefix) # Check for Xiaomi Device
+elseif($MacXiaomi -contains $MacPrefix)
 {$Router = "a Xiaomi device"}
 else # If router is unknown
 {$Router = "Unknown"}
