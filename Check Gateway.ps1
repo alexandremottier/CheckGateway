@@ -2,7 +2,7 @@ $LocalIP = (Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.I
 $MacAddress = ((Get-NetNeighbor -IPAddress $LocalIP).LinkLayerAddress)
 $PublicIP = ((Resolve-DnsName -Name myip.opendns.com -Server resolver1.opendns.com).IPAddress)
 
-$MacFreebox = "A0-B1-C2","F4-CA-E5"
+$MacFreebox = "F4-CA-E5"
 $MacLivebox = "00-37-B7"
 $MacApple = "BC-B8-63"
 $MacXiaomi = "E0-CC-F8"
