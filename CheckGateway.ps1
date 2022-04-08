@@ -1,28 +1,28 @@
-$LocalIP = (Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled}).DefaultIPGateway
-$MacAddress = ((Get-NetNeighbor -IPAddress $LocalIP).LinkLayerAddress)
+$IP = (Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.IPEnabled}).DefaultIPGateway
+$MACAddressList = (Get-NetNeighbor -State Reachable)
+foreach ($item in $MACAddressList) {
+$AdresseIP = $item.IPAddress
+$AdresseMAC = $item.LinkLayerAddress
+if ($IP -contains $AdresseIP){$GatewayMac = $AdresseMAC ; $GatewayIP = $AdresseIP}
+}
+
+
 $PublicIP = ((Resolve-DnsName -Name myip.opendns.com -Server resolver1.opendns.com).IPAddress)
 
 $MacFreebox = "F4-CA-E5","00-07-CB","00-24-D4","14-0C-76","34-27-92","68-A3-78","70-FC-8F","8C-97-EA","E4-9E-12"
 $MacLivebox = "00-37-B7"
 $MacApple = "BC-B8-63"
 $MacXiaomi = "E0-CC-F8"
+$MacFortinet = "08-5B-0E"
 
-$MacSplit = $MacAddress -split "-"
+$MacSplit = $GatewayMac -split "-"
 $MacPrefix = $MacSplit[0] + "-" + $MacSplit[1] + "-" + $MacSplit[2]
 
-# Checking if Mac Address is known
-if($MacFreebox -contains $MacPrefix) # Check for Freebox
-{$Router = "a Freebox"}
-elseif($MacLivebox -contains $MacPrefix) # Check for Livebox
-{$Router = "a Livebox"}
-elseif($MacApple -contains $MacPrefix) # Check for Apple Device
-{$Router = "an Apple device"}
-elseif($MacXiaomi -contains $MacPrefix) # Check for Xiaomi Device
-{$Router = "a Xiaomi device"}
-else # If router is unknown
-{$Router = "Unknown"}
+$Router = (Invoke-WebRequest -Uri "https://api.macvendors.com/$MacPrefix").Content
 
-if ($Router -like 'Unknown') # In the case router is unknown
-{Write-Host "Router is unknown ($MacAddress). Maybe a randomized MAC address" ; exit 1} # Router is unknown, it's an error, so error code 1
-else # In the case router is known
-{Write-Host "Gateway is $Router ($MacAddress). `nLocal IP is $LocalIP. `nPublic IP is $PublicIP." ; exit 0} # Router is known, it's ok, error code 0
+$ShodanLink = "https://api.shodan.io/shodan/host/" + $PublicIP + "?key=9r6vVczYqYGR9F3WADASttMPt6fqK2Mm"
+$Shodan = Invoke-RestMethod -uri $ShodanLink
+$ISP = $Shodan.isp
+if ($Router -eq ""){"Gateway vendor is unknown ($GatewayMac). `nLocal IP is $AdresseIP. `nPublic IP is $PublicIP."}
+else{
+Write-Host "Gateway vendor is $Router ($GatewayMac). `nLocal IP is $AdresseIP. `nPublic IP is $PublicIP ($ISP)."}
